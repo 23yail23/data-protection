@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+
+int shift = 9; // Зсув для дешифрування
+
+// Визначення алфавіту і роторів
+const char standart[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+const char rotor0[] = "BDFHJLCPRTXVZNYEIWGAKMUSQO";  
+const char rotor1[] = "AJDKSIRUXBLHWTMCQGZNPYFVOE";  
+const char rotor2[] = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";  
+
+
+// Повертає індекс символу або -1, якщо символ не знайдено
+int findIndex(char c, const char *array) {
+    for (int i = 0; i < 26; i++) { 
+        if (array[i] == c) return i; 
+    }
+    return -1; // Якщо символ не знайдено
+}
+
+// Розшифровує текст за допомогою роторів і зсуву
+void decrypt(const char *cipher, char *message) {
+    for (int i = 0; cipher[i] != '\0'; i++) { 
+        char c = cipher[i];
+        
+        // Зворотний оберт через третій, другий та перший ротори
+        c = standart[findIndex(c, rotor2)];
+        c = standart[findIndex(c, rotor1)];
+        c = standart[findIndex(c, rotor0)];
+
+        // Відновлення початкового символу з урахуванням зсуву
+        c = standart[(findIndex(c, standart) - shift - i + 26) % 26];
+
+        message[i] = c; 
+    }
+}
+
+// Головна функція
+int main() {
+    const char *cipher = "PQSACVVTOISXFXCIAMQEM"; // Вхідний зашифрований текст
+    char decoded[100]; 
+
+    printf("Зашифроване повідомлення: %s\n", cipher);
+
+    decrypt(cipher, decoded);
+    printf("Розшифроване повідомлення: %s\n", decoded);
+
+    return 0; // Успішне завершення програми
+}
