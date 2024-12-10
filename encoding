@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <string.h>
+
+int shift = 4; // Зсув для шифрування
+
+const char standart[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const char rotor0[] = "BDFHJLCPRTXVZNYEIWGAKMUSQO"; 
+const char rotor1[] = "AJDKSIRUXBLHWTMCQGZNPYFVOE"; 
+const char rotor2[] = "EKMFLGDQVZNTOWYHXUSPAIBRCJ"; 
+
+// Знаходження символу в алфавіті
+int findIndex(char c, const char *array) {
+    for (int i = 0; i < 26; i++) {
+        if (array[i] == c) return i;
+    }
+    return -1;
+}
+
+// Кожний символ повідомлення проходить через три ротори з урахуванням зсуву
+void encrypt(const char *message, char *cipher) {
+    for (int i = 0; message[i] != '\0'; i++) {
+        // Додаємо зсув та індекс символу в алфавіті
+        char c = standart[(findIndex(message[i], standart) + shift + i) % 26];
+        
+        // Пропускаємо символ через три ротори
+        c = rotor0[findIndex(c, standart)];
+        c = rotor1[findIndex(c, standart)];
+        c = rotor2[findIndex(c, standart)];
+        
+        // Додаємо зашифрований символ до результату
+        cipher[i] = c;
+    }
+}
+
+// Основна функція
+int main() {
+    const char *message = "AAA"; // Вхідне повідомлення
+    char cipher[100]; // Масив для збереження зашифрованого повідомлення
+
+    printf("Повідомлення для шифрування: %s\n", message);
+
+    // Виклик функції шифрування
+    encrypt(message, cipher);
+    printf("Зашифроване повідомлення: %s\n", cipher);
+
+    return 0; // Завершення програми
+}
